@@ -3,6 +3,7 @@
   "name": "velog-preview-toggle-button",
   "description": "if you click toggle button then non display preview",
   "version": "1.0",
+  "author": "dlwlsghgk124@naver.com",
 
   "action": {
     "default_icon": {
@@ -24,18 +25,12 @@
   "content_scripts": [
     {
       "js": ["scripts/content.js"],
-      "matches": ["https://www.gugus.co.kr/shopping/*"]
+      "matches": ["https://velog.io/write*"]
     }
   ],
 
   "background": {
     "service_worker": "/background.js"
   },
-  "web_accessible_resources": [
-    {
-      "resources": ["/scripts/main.js"],
-      "matches": ["https://velog.io/write/*"]
-    }
-  ],
   "host_permissions": ["<all_urls>"]
 }
