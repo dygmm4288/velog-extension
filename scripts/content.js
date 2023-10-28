@@ -30,7 +30,7 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
       .call(document.querySelectorAll("button"))
       .filter((element) => element.innerText.includes("임시저장"))[0];
     const $footerContainer = document.querySelector(".sc-ctqQKy.hzSnZf");
-
+    console.log({ $previewDiv, $tempStoreButton });
     if (!$previewDiv || !$tempStoreButton) return;
 
     $button.addEventListener(
@@ -140,10 +140,14 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
 
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
-    console.log("herf is executing");
-    if (!isMatched) return;
+    if (!isMatched || !select(".CodeMirror")) return;
     toggleButtonExecute();
     appendSaveTemplateBtn();
   });
+
+  const codeMirror = select(".CodeMirror");
+  if (!codeMirror) return;
+
   toggleButtonExecute();
+  appendSaveTemplateBtn();
 })();
