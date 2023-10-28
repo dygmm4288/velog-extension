@@ -1,26 +1,27 @@
-const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
+const UTIL_SRC = chrome.runtime.getURL('scripts/common/util.js');
 const FOOTER_CONTAINER_SELECTOR =
   '[data-testid="codemirror"] > div:last-child > div';
 const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
 
 (async () => {
-  const { select, selectAll } = await import(UTIL_SRC);
+  const { select, selectAll, append, setStorage, getStorage, create } =
+    await import(UTIL_SRC);
   let $button;
   function createButton() {
-    $button = document.createElement("button");
-    $button.classList.add("jYsOEX", "gRPveD");
+    $button = document.createElement('button');
+    $button.classList.add('jYsOEX', 'gRPveD');
 
-    $button.innerText = "미리보기 토글";
-    $button.dataset.toggle = "true";
+    $button.innerText = '미리보기 토글';
+    $button.dataset.toggle = 'true';
 
     return;
   }
   function handlerButtonEvent($previewDiv, $footerContainer, $button) {
     return () => {
-      const isToggle = $button.dataset.toggle === "true";
-      $previewDiv.style.display = isToggle ? "none" : "";
-      $footerContainer.style.width = isToggle ? "100vw" : "100%";
-      $button.dataset.toggle = isToggle ? "false" : "true";
+      const isToggle = $button.dataset.toggle === 'true';
+      $previewDiv.style.display = isToggle ? 'none' : '';
+      $footerContainer.style.width = isToggle ? '100vw' : '100%';
+      $button.dataset.toggle = isToggle ? 'false' : 'true';
     };
   }
   function appendButton($tempStoreButton, $button) {
@@ -31,13 +32,13 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
 
     const $previewDiv = select()(PREVIEW_DIV_SELECTOR);
     const $tempStoreButton = Array.prototype.slice
-      .call(selectAll()("button"))
-      .filter((element) => element.innerText.includes("임시저장"))[0];
+      .call(selectAll()('button'))
+      .filter((element) => element.innerText.includes('임시저장'))[0];
     const $footerContainer = select()(FOOTER_CONTAINER_SELECTOR);
     if (!$previewDiv || !$tempStoreButton) return;
 
     $button.addEventListener(
-      "click",
+      'click',
       handlerButtonEvent($previewDiv, $footerContainer, $button),
     );
     appendButton($tempStoreButton, $button);
@@ -48,91 +49,89 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
    * save template
    */
   // body 생성 및 template button wrapper
-  const templateWrapper = document.createElement("div");
-  templateWrapper.style.position = "absolute";
-  templateWrapper.style.top = "0";
-  templateWrapper.style.right = "0";
-  templateWrapper.style.width = "300px";
-  templateWrapper.style.height = "auto";
-  const body = select()("body");
+  const templateWrapper = document.createElement('div');
+  const body = select()('body');
 
-  function setLocalStorage(saveTemplate) {
-    localStorage.setItem("template", JSON.stringify(saveTemplate));
+  templateWrapper.style.cssText = `
+    position: absolute;
+    top : 0;
+    right: 0;
+    widht: 300px;
+    height: auto;
+  `;
+
+  function setTemplate(saveTemplate) {
+    return setStorage('template', saveTemplate);
   }
 
   const appendSaveTemplateBtn = () => {
-    const button = document.createElement("button");
+    const button = create('button');
+    button.innerText = '템플릿 저장';
+    templateWrapper.innerHTML = '';
+    append(body, append(templateWrapper, button));
 
-    button.innerText = "템플릿 저장";
-    templateWrapper.innerHTML = "";
-    templateWrapper.append(button);
-    body.append(templateWrapper);
-
-    button.addEventListener("click", (event) => {
-      // 템플릿 데이터 가져오기
-      const templateTexts = Array.from(
-        document.querySelectorAll(".CodeMirror-line"),
-      );
-      if (templateTexts.length <= 0) {
-        alert("템플릿을 입력해 주세요.");
-        return;
-      }
-
-      function TemplateObject(content) {
-        this.id = Date.now();
-        this.content = content;
-      }
-
-      const templateContent = templateTexts.reduce((acc, cus) => {
-        return (acc +=
-          cus.innerText.replace(/\u200B/g, "") === ""
-            ? `\n`
-            : cus.innerText + "\n");
-      }, "");
-
-      const template = new TemplateObject(templateContent);
-      const getTemplate = localStorage.getItem("template") ?? "[]";
-      const saveTemplate = [...JSON.parse(getTemplate), template];
-
-      setLocalStorage(saveTemplate);
-    });
+    button.addEventListener('click', handlerAddTemplate);
   };
 
-  const getTemplateBtn = () => {
-    let template = document.querySelector("#template-btn-wrapper");
-    if (!template) {
-      template = document.createElement("div");
-      template.setAttribute("id", "template-btn-wrapper");
-    }
-    template.innerHTML = "";
+  function handlerAddTemplate() {
+    const templateTexts = Array.from(selectAll()('.CodeMirror-line'));
 
-    const getTemplate = JSON.parse(localStorage.getItem("template") ?? "[]");
-    getTemplate.forEach((item, index) => {
-      const button = document.createElement("button");
+    function TemplateObject(content) {
+      this.id = Date.now();
+      this.content = content;
+    }
+
+    const templateContent = templateTexts.reduce((acc, cur) => {
+      return (acc +=
+        cur.innerText.replace(/\u200B/g, '') === ''
+          ? `\n`
+          : cur.innerText + '\n');
+    }, '');
+
+    const template = new TemplateObject(templateContent);
+    const storgedTemplate = getStorage('template') ?? [];
+    const saveTemplate = [...storgedTemplate, template];
+
+    setStorage('template', saveTemplate);
+    getTemplateBtn();
+  }
+
+  const getTemplateBtn = () => {
+    let templateWrapper = select()('#template-btn-wrapper');
+    if (!templateWrapper) {
+      templateWrapper = create('div');
+      templateWrapper.setAttribute('id', 'template-btn-wrapper');
+    }
+    templateWrapper.innerHTML = '';
+
+    const storgedTemplate = getStorage('template') ?? [];
+
+    storgedTemplate.forEach((_, index) => {
+      const button = create('button');
       button.innerText = `${index}번 템플릿`;
       button.dataset.index = index;
-      template.append(button);
+      templateWrapper.append(button);
     });
-    templateWrapper.append(template);
+
+    templateWrapper.append(templateWrapper);
     // 템플릿 버튼 이벤트 등록
-    const templateBtns = document.querySelectorAll(
-      "#template-btn-wrapper button",
-    );
+    const templateBtns = selectAll()('#template-btn-wrapper button');
+
     templateBtns.forEach((btn) => {
-      btn.addEventListener("click", (event) => {
+      btn.addEventListener('click', (event) => {
         const index = event.target.dataset.index;
         // 붙여넣기 대상
-        const textArea = document.querySelector(".CodeMirror textarea");
+        const textArea = select()('.CodeMirror textarea');
 
         // clipboard 객체 생성
-        const clipboard = new ClipboardEvent("paste", {
+        const clipboard = new ClipboardEvent('paste', {
           clipboardData: new DataTransfer(),
         });
 
         // cliboard에 데이터 주입
         clipboard.clipboardData.items.add(
-          getTemplate[index].content,
-          "text/plain",
+          storgedTemplate[index].content,
+          'text/plain',
         );
 
         // clipboard 이벤트 실행
@@ -143,12 +142,12 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
 
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
-    if (!isMatched || !select(".CodeMirror")) return;
+    if (!isMatched || !select('.CodeMirror')) return;
     toggleButtonExecute();
     appendSaveTemplateBtn();
   });
 
-  const codeMirror = select(".CodeMirror");
+  const codeMirror = select('.CodeMirror');
   if (!codeMirror) return;
 
   toggleButtonExecute();
