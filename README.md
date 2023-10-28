@@ -8,8 +8,7 @@ velog 블로그 글 작성을 더 편리하게 해주는 크롬 확장 프로그
 - 템플릿 저장 및 불러오기
 
 # 데모
-
-<video src="./demo_2.mov" autoplay>
+![demo.gif](demo.gif)
 
 # 설치 방법
 
