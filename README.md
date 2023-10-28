@@ -3,13 +3,14 @@
 velog 블로그 글 작성을 더 편리하게 해주는 크롬 확장 프로그램
 
 # 기능
-
 - Preview 버튼 없애기
 - 템플릿 저장 및 불러오기
 
 # 데모
 
 <img src="./demo.gif">
+https://github.com/dygmm4288/velog-preview-extension/assets/55860930/54b00a95-bd54-437f-bf67-67221c1a855a
+
 
 # 설치 방법
 
