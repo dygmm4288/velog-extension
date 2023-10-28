@@ -8,7 +8,6 @@ chrome.history.onVisited.addListener(async (historyItem) => {
   const pattern = /https:\/\/velog.io\/write/;
   const isMatched = !!url.match(pattern);
 
-  console.log({ url }, url.match(pattern));
   const { id } = await getCurrentTab();
   chrome.tabs.sendMessage(id, { isMatched });
 });
