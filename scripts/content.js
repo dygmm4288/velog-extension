@@ -44,23 +44,19 @@
    * save template
    */
   // body 생성 및 template button wrapper
-  function getWrapperTags() {
-    const templateWrapper = document.createElement("div");
-    templateWrapper.style.position = "absolute";
-    templateWrapper.style.top = "0";
-    templateWrapper.style.right = "0";
-    templateWrapper.style.width = "300px";
-    templateWrapper.style.height = "auto";
-    return templateWrapper;
-  }
+  const templateWrapper = document.createElement("div");
+  templateWrapper.style.position = "absolute";
+  templateWrapper.style.top = "0";
+  templateWrapper.style.right = "0";
+  templateWrapper.style.width = "300px";
+  templateWrapper.style.height = "auto";
+  const body = document.querySelector("body");
 
   function setLocalStorage(saveTemplate) {
     localStorage.setItem("template", JSON.stringify(saveTemplate));
   }
 
   const appendSaveTemplateBtn = () => {
-    const body = document.querySelector("body");
-    const templateWrapper = getWrapperTags();
     const button = document.createElement("button");
 
     button.innerText = "템플릿 저장";
