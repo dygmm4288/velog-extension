@@ -162,7 +162,11 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     toggleButtonExecute();
     appendSaveTemplateBtn();
   });
-  setDisplay(templateWrapper)('block');
-  toggleButtonExecute();
-  appendSaveTemplateBtn();
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  if (url.pathname === '/write') {
+    setDisplay(templateWrapper)('block');
+    toggleButtonExecute();
+    appendSaveTemplateBtn();
+  }
 })();
