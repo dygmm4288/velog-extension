@@ -1,6 +1,10 @@
 const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
+const FOOTER_CONTAINER_SELECTOR =
+  '[data-testid="codemirror"] > div:last-child > div';
+const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
+
 (async () => {
-  const { select } = await import(UTIL_SRC);
+  const { select, selectAll } = await import(UTIL_SRC);
   let $button;
   function createButton() {
     $button = document.createElement("button");
@@ -25,12 +29,11 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
   function toggleButtonExecute() {
     if (!$button) createButton(); // 버튼이 없을 시에는 버튼을 생성한다.
 
-    const $previewDiv = document.querySelector('[data-testid="right"]');
+    const $previewDiv = select()(PREVIEW_DIV_SELECTOR);
     const $tempStoreButton = Array.prototype.slice
-      .call(document.querySelectorAll("button"))
+      .call(selectAll()("button"))
       .filter((element) => element.innerText.includes("임시저장"))[0];
-    const $footerContainer = document.querySelector(".sc-ctqQKy.hzSnZf");
-    console.log({ $previewDiv, $tempStoreButton });
+    const $footerContainer = select()(FOOTER_CONTAINER_SELECTOR);
     if (!$previewDiv || !$tempStoreButton) return;
 
     $button.addEventListener(
@@ -51,7 +54,7 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
   templateWrapper.style.right = "0";
   templateWrapper.style.width = "300px";
   templateWrapper.style.height = "auto";
-  const body = select("body");
+  const body = select()("body");
 
   function setLocalStorage(saveTemplate) {
     localStorage.setItem("template", JSON.stringify(saveTemplate));
