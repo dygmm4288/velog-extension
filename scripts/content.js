@@ -36,6 +36,11 @@ templateWrapper.style.top = "0";
 templateWrapper.style.right = "0";
 templateWrapper.style.width = "300px";
 templateWrapper.style.height = "auto";
+
+function setLocalStorage(saveTemplate) {
+  localStorage.setItem("template", JSON.stringify(saveTemplate));
+}
+
 const appendSaveTemplateBtn = () => {
   const button = document.createElement("button");
   button.classList.add();
@@ -70,7 +75,7 @@ const appendSaveTemplateBtn = () => {
     const getTemplate = localStorage.getItem("template") ?? "[]";
     const saveTemplate = [...JSON.parse(getTemplate), template];
 
-    localStorage.setItem("template", JSON.stringify(saveTemplate));
+    setLocalStorage(saveTemplate);
   });
 };
 
@@ -108,7 +113,7 @@ const getTemplateBtn = () => {
         "text/plain",
       );
 
-      // 디스패치 실행
+      // clipboard 이벤트 실행
       textArea.dispatchEvent(clipboard);
     });
   });
