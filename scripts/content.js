@@ -115,7 +115,6 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
       templateWrapper.append(button);
     });
 
-    templateWrapper.append(templateWrapper);
     // 템플릿 버튼 이벤트 등록
     const templateBtns = selectAll()('#template-btn-wrapper button');
 
@@ -141,28 +140,41 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
       });
     });
   };
+  let observer;
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
-    // 여기서 어떻게 기다려
-    // 여기가 문제 : 1. 처음에 페이지가 로딩이 될때 에디터가 없으면 제대로 동작하지 않는다
-    // 나가기했다가 다시 들어오면 에디터가 이미 로딩이 돼있기 때문에 제대로 동작함
-    // 그렇다면 해결방법
-    // 1. 유저한테 다시 리로드하라고 지시한다.
-    // 2. 저 에디터가 로딩이 완료될 때 까지 기다린다 (약... 3초?) -> 이걸 목표로 하는데 안될경우 1번
-    // 3. 새로고침한다.
-    // 4. 나가기를 했다가 다시 들어온다.
-    if (!isMatched) return;
-    //window.location.reload();
+    if (!isMatched) return; // 글쓰기 페이지가 아니라면
+    const codeMirror = select()('.CodeMirror');
+    console.log(codeMirror);
+    if (!codeMirror) {
+      observer = new MutationObserver(function () {
+        if (document.querySelector('.CodeMirror')) {
+          // add what you want to do here...
+          setDisplay(templateWrapper)('block');
+          toggleButtonExecute();
+          appendSaveTemplateBtn();
+          observer.disconnect();
+        }
+      });
+      const target = document.querySelector('#root');
+      const config = { childList: true };
+      observer.observe(target, config);
+      return;
+    }
     setDisplay(templateWrapper)('block');
-    console.log(!select()('.CodeMirror'));
     toggleButtonExecute();
     appendSaveTemplateBtn();
+
+    //   //window.location.reload();
   });
-  console.log('prev : ');
-  const codeMirror = select()('.CodeMirror');
-  console.log('next : ', codeMirror);
-  setDisplay(templateWrapper)('none');
-  if (!codeMirror) return;
+  // 이 observer라는 것은 언제 이거를 감지를 해야하냐면
+  // 사실 글쓰기에서 찾아야한다.
+
+  // console.log('prev : ');
+  // const codeMirror = select()('.CodeMirror');
+  // console.log('next : ', codeMirror);
+  // setDisplay(templateWrapper)('none');
+  // if (!codeMirror) return;
   setDisplay(templateWrapper)('block');
   toggleButtonExecute();
   appendSaveTemplateBtn();
