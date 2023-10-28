@@ -144,7 +144,7 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     const codeMirror = select()('.CodeMirror');
     if (!codeMirror) {
       observer = new MutationObserver(function () {
-        if (document.querySelector('.CodeMirror')) {
+        if (select()('.CodeMirror')) {
           setDisplay(templateWrapper)('block');
           toggleButtonExecute();
           appendSaveTemplateBtn();
@@ -153,7 +153,7 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
       });
 
       setDisplay(templateWrapper)('none');
-      const target = document.querySelector('#root');
+      const target = select()('#root');
       const config = { childList: true };
       observer.observe(target, config);
       return;
