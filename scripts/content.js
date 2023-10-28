@@ -92,10 +92,12 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     const storgedTemplate = getStorage('template') ?? [];
     const saveTemplate = [...storgedTemplate, template];
 
-    setStorage('template', saveTemplate);
+    setTemplate(saveTemplate);
     getTemplateBtn();
   }
-
+  const setDisplay = (element) => {
+    return (str) => (element.style.display = str);
+  };
   const getTemplateBtn = () => {
     let templateWrapper = select()('#template-btn-wrapper');
     if (!templateWrapper) {
@@ -139,17 +141,29 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
       });
     });
   };
-
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
-    if (!isMatched || !select('.CodeMirror')) return;
+    // 여기서 어떻게 기다려
+    // 여기가 문제 : 1. 처음에 페이지가 로딩이 될때 에디터가 없으면 제대로 동작하지 않는다
+    // 나가기했다가 다시 들어오면 에디터가 이미 로딩이 돼있기 때문에 제대로 동작함
+    // 그렇다면 해결방법
+    // 1. 유저한테 다시 리로드하라고 지시한다.
+    // 2. 저 에디터가 로딩이 완료될 때 까지 기다린다 (약... 3초?) -> 이걸 목표로 하는데 안될경우 1번
+    // 3. 새로고침한다.
+    // 4. 나가기를 했다가 다시 들어온다.
+    if (!isMatched) return;
+    //window.location.reload();
+    setDisplay(templateWrapper)('block');
+    console.log(!select()('.CodeMirror'));
     toggleButtonExecute();
     appendSaveTemplateBtn();
   });
-
-  const codeMirror = select('.CodeMirror');
+  console.log('prev : ');
+  const codeMirror = select()('.CodeMirror');
+  console.log('next : ', codeMirror);
+  setDisplay(templateWrapper)('none');
   if (!codeMirror) return;
-
+  setDisplay(templateWrapper)('block');
   toggleButtonExecute();
   appendSaveTemplateBtn();
 })();
