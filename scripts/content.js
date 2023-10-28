@@ -29,7 +29,11 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
     const $tempStoreButton = Array.prototype.slice
       .call(document.querySelectorAll("button"))
       .filter((element) => element.innerText.includes("임시저장"))[0];
-    const $footerContainer = document.querySelector(".sc-ctqQKy.hzSnZf");
+    //class="sc-eldieg ldPToJ"
+    // class="sc-ctqQKy hzSnZf"
+    const $footerContainer =
+      document.querySelector(".sc-ctqQKy.hzSnZf") ??
+      document.querySelector(".sc-eldieg.ldPToJ");
     console.log({ $previewDiv, $tempStoreButton });
     if (!$previewDiv || !$tempStoreButton) return;
 
@@ -92,6 +96,7 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
       const saveTemplate = [...JSON.parse(getTemplate), template];
 
       setLocalStorage(saveTemplate);
+      getTemplateBtn();
     });
   };
 
@@ -143,6 +148,7 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
     if (!isMatched || !select(".CodeMirror")) return;
     toggleButtonExecute();
     appendSaveTemplateBtn();
+    getTemplateBtn();
   });
 
   const codeMirror = select(".CodeMirror");
@@ -150,4 +156,5 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
 
   toggleButtonExecute();
   appendSaveTemplateBtn();
+  getTemplateBtn();
 })();
