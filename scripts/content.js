@@ -1,5 +1,6 @@
-(() => {
-  console.log("content script execute");
+const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
+(async () => {
+  const { select } = await import(UTIL_SRC);
   let $button;
   function createButton() {
     $button = document.createElement("button");
@@ -50,7 +51,7 @@
   templateWrapper.style.right = "0";
   templateWrapper.style.width = "300px";
   templateWrapper.style.height = "auto";
-  const body = document.querySelector("body");
+  const body = select("body");
 
   function setLocalStorage(saveTemplate) {
     localStorage.setItem("template", JSON.stringify(saveTemplate));
@@ -95,8 +96,11 @@
   };
 
   const getTemplateBtn = () => {
-    const template = document.createElement("div");
-    template.setAttribute("id", "template-btn-wrapper");
+    let template = document.querySelector("#template-btn-wrapper");
+    if (!template) {
+      template = document.createElement("div");
+      template.setAttribute("id", "template-btn-wrapper");
+    }
     template.innerHTML = "";
 
     const getTemplate = JSON.parse(localStorage.getItem("template") ?? "[]");
@@ -133,14 +137,13 @@
       });
     });
   };
-  appendSaveTemplateBtn();
-  getTemplateBtn();
 
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
     console.log("herf is executing");
     if (!isMatched) return;
     toggleButtonExecute();
+    appendSaveTemplateBtn();
   });
   toggleButtonExecute();
 })();

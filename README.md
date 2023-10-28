@@ -1,12 +1,17 @@
 # velog-preview-extension
 
-velog 블로그 글 작성 중 preview 안보이게끔 도와주는 크롬 확장 프로그램
+velog 블로그 글 작성을 더 편리하게 해주는 크롬 확장 프로그램
+
+# 기능
+
+- Preview 버튼 없애기
+- 템플릿 저장 및 불러오기
 
 # 데모
 
 <img src="./demo.gif">
 
-# 사용 방법
+# 설치 방법
 
 1. git clone
 2. chrome://extensions/ 접속
