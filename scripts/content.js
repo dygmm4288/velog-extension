@@ -28,7 +28,7 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     $tempStoreButton.parentElement.prepend($button);
   }
   function toggleButtonExecute() {
-    if (!$button) createButton(); // 버튼이 없을 시에는 버튼을 생성한다.
+    if (!$button) createButton();
 
     const $previewDiv = select()(PREVIEW_DIV_SELECTOR);
     const $tempStoreButton = Array.prototype.slice
@@ -44,11 +44,6 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     appendButton($tempStoreButton, $button);
   }
 
-  /**
-   * template start
-   * save template
-   */
-  // body 생성 및 template button wrapper
   const templateWrapper = document.createElement('div');
   const body = select()('body');
 
@@ -71,6 +66,7 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     append(body, append(templateWrapper, button));
 
     button.addEventListener('click', handlerAddTemplate);
+    getTemplateBtn();
   };
 
   function handlerAddTemplate() {
@@ -99,43 +95,40 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     return (str) => (element.style.display = str);
   };
   const getTemplateBtn = () => {
-    let templateWrapper = select()('#template-btn-wrapper');
-    if (!templateWrapper) {
-      templateWrapper = create('div');
-      templateWrapper.setAttribute('id', 'template-btn-wrapper');
+    let templateBtnWrapper = select()('#template-btn-wrapper');
+    if (!templateBtnWrapper) {
+      templateBtnWrapper = create('div');
+      templateBtnWrapper.setAttribute('id', 'template-btn-wrapper');
     }
-    templateWrapper.innerHTML = '';
+    templateBtnWrapper.innerHTML = '';
 
-    const storgedTemplate = getStorage('template') ?? [];
+    const storagedTemplate = getStorage('template') ?? [];
 
-    storgedTemplate.forEach((_, index) => {
+    storagedTemplate.forEach((_, index) => {
       const button = create('button');
       button.innerText = `${index}번 템플릿`;
       button.dataset.index = index;
-      templateWrapper.append(button);
+      templateBtnWrapper.append(button);
     });
 
-    // 템플릿 버튼 이벤트 등록
+    append(templateWrapper, templateBtnWrapper);
+
     const templateBtns = selectAll()('#template-btn-wrapper button');
 
     templateBtns.forEach((btn) => {
       btn.addEventListener('click', (event) => {
         const index = event.target.dataset.index;
-        // 붙여넣기 대상
         const textArea = select()('.CodeMirror textarea');
 
-        // clipboard 객체 생성
         const clipboard = new ClipboardEvent('paste', {
           clipboardData: new DataTransfer(),
         });
 
-        // cliboard에 데이터 주입
         clipboard.clipboardData.items.add(
-          storgedTemplate[index].content,
+          storagedTemplate[index].content,
           'text/plain',
         );
 
-        // clipboard 이벤트 실행
         textArea.dispatchEvent(clipboard);
       });
     });
@@ -143,13 +136,11 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
   let observer;
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
-    if (!isMatched) return; // 글쓰기 페이지가 아니라면
+    if (!isMatched) return;
     const codeMirror = select()('.CodeMirror');
-    console.log(codeMirror);
     if (!codeMirror) {
       observer = new MutationObserver(function () {
         if (document.querySelector('.CodeMirror')) {
-          // add what you want to do here...
           setDisplay(templateWrapper)('block');
           toggleButtonExecute();
           appendSaveTemplateBtn();
@@ -164,17 +155,7 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     setDisplay(templateWrapper)('block');
     toggleButtonExecute();
     appendSaveTemplateBtn();
-
-    //   //window.location.reload();
   });
-  // 이 observer라는 것은 언제 이거를 감지를 해야하냐면
-  // 사실 글쓰기에서 찾아야한다.
-
-  // console.log('prev : ');
-  // const codeMirror = select()('.CodeMirror');
-  // console.log('next : ', codeMirror);
-  // setDisplay(templateWrapper)('none');
-  // if (!codeMirror) return;
   setDisplay(templateWrapper)('block');
   toggleButtonExecute();
   appendSaveTemplateBtn();
