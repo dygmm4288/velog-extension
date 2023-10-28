@@ -14,7 +14,7 @@
     },
     "default_title": "velog-preview-toggle-button"
   },
-  "permissions": [],
+  "permissions": ["tabs", "history", "nativeMessaging"],
   "icons": {
     "16": "/images/icon-16.png",
     "32": "/images/icon-32.png",
@@ -25,10 +25,9 @@
   "content_scripts": [
     {
       "js": ["scripts/content.js"],
-      "matches": ["https://velog.io/write*"]
+      "matches": ["https://velog.io/*"]
     }
   ],
-
   "background": {
     "service_worker": "/background.js"
   },
