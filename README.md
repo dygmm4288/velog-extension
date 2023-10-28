@@ -10,6 +10,7 @@ velog 블로그 글 작성을 더 편리하게 해주는 크롬 확장 프로그
 # 데모
 
 <img src="./demo.gif">
+<img src="./demo_2.gif">
 
 # 설치 방법
 
