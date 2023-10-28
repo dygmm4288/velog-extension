@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "velog-preview-toggle-button",
   "description": "if you click toggle button then non display preview",
-  "version": "1.0",
+  "version": "1.01",
   "author": "dlwlsghgk124@naver.com",
 
   "action": {
@@ -12,7 +12,8 @@
       "48": "/images/icon-48.png",
       "128": "/images/icon-128.png"
     },
-    "default_title": "velog-preview-toggle-button"
+    "default_title": "velog-preview-toggle-button",
+    "default_popup": "popup.html"
   },
   "permissions": [],
   "icons": {
