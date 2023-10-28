@@ -1,11 +1,3 @@
-/* chrome.history.onVisited.addListener((historyItem) => {
-  const { url } = historyItem;
-  const { pathname } = new URL(url);
-  if(pathname === '/write') {
-    chrome.tabs.sendMessage()
-  }
-
-}); */
 async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true };
   let [tab] = await chrome.tabs.query(queryOptions);
