@@ -1,146 +1,168 @@
-(() => {
-  console.log("content script execute");
+const UTIL_SRC = chrome.runtime.getURL('scripts/common/util.js');
+const FOOTER_CONTAINER_SELECTOR =
+  '[data-testid="codemirror"] > div:last-child > div';
+const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
+
+(async () => {
+  const { select, selectAll, append, setStorage, getStorage, create } =
+    await import(UTIL_SRC);
   let $button;
   function createButton() {
-    $button = document.createElement("button");
-    $button.classList.add("jYsOEX", "gRPveD");
+    $button = document.createElement('button');
+    $button.classList.add('jYsOEX', 'gRPveD');
 
-    $button.innerText = "미리보기 토글";
-    $button.dataset.toggle = "true";
+    $button.innerText = '미리보기 토글';
+    $button.dataset.toggle = 'true';
 
     return;
   }
   function handlerButtonEvent($previewDiv, $footerContainer, $button) {
     return () => {
-      const isToggle = $button.dataset.toggle === "true";
-      $previewDiv.style.display = isToggle ? "none" : "";
-      $footerContainer.style.width = isToggle ? "100vw" : "100%";
-      $button.dataset.toggle = isToggle ? "false" : "true";
+      const isToggle = $button.dataset.toggle === 'true';
+      $previewDiv.style.display = isToggle ? 'none' : '';
+      $footerContainer.style.width = isToggle ? '100vw' : '100%';
+      $button.dataset.toggle = isToggle ? 'false' : 'true';
     };
   }
   function appendButton($tempStoreButton, $button) {
     $tempStoreButton.parentElement.prepend($button);
   }
   function toggleButtonExecute() {
-    if (!$button) createButton(); // 버튼이 없을 시에는 버튼을 생성한다.
+    if (!$button) createButton();
 
-    const $previewDiv = document.querySelector('[data-testid="right"]');
+    const $previewDiv = select()(PREVIEW_DIV_SELECTOR);
     const $tempStoreButton = Array.prototype.slice
-      .call(document.querySelectorAll("button"))
-      .filter((element) => element.innerText.includes("임시저장"))[0];
-    const $footerContainer = document.querySelector(".sc-ctqQKy.hzSnZf");
-
+      .call(selectAll()('button'))
+      .filter((element) => element.innerText.includes('임시저장'))[0];
+    const $footerContainer = select()(FOOTER_CONTAINER_SELECTOR);
     if (!$previewDiv || !$tempStoreButton) return;
 
     $button.addEventListener(
-      "click",
+      'click',
       handlerButtonEvent($previewDiv, $footerContainer, $button),
     );
     appendButton($tempStoreButton, $button);
   }
 
-  /**
-   * template start
-   * save template
-   */
-  // body 생성 및 template button wrapper
-  const templateWrapper = document.createElement("div");
-  templateWrapper.style.position = "absolute";
-  templateWrapper.style.top = "0";
-  templateWrapper.style.right = "0";
-  templateWrapper.style.width = "300px";
-  templateWrapper.style.height = "auto";
-  const body = document.querySelector("body");
+  const templateWrapper = document.createElement('div');
+  const body = select()('body');
 
-  function setLocalStorage(saveTemplate) {
-    localStorage.setItem("template", JSON.stringify(saveTemplate));
+  templateWrapper.style.cssText = `
+    position: absolute;
+    top : 0;
+    right: 0;
+    widht: 300px;
+    height: auto;
+  `;
+
+  function setTemplate(saveTemplate) {
+    return setStorage('template', saveTemplate);
   }
 
   const appendSaveTemplateBtn = () => {
-    const button = document.createElement("button");
+    const button = create('button');
+    button.innerText = '템플릿 저장';
+    templateWrapper.innerHTML = '';
+    append(body, append(templateWrapper, button));
 
-    button.innerText = "템플릿 저장";
-    templateWrapper.innerHTML = "";
-    templateWrapper.append(button);
-    body.append(templateWrapper);
-
-    button.addEventListener("click", (event) => {
-      // 템플릿 데이터 가져오기
-      const templateTexts = Array.from(
-        document.querySelectorAll(".CodeMirror-line"),
-      );
-      if (templateTexts.length <= 0) {
-        alert("템플릿을 입력해 주세요.");
-        return;
-      }
-
-      function TemplateObject(content) {
-        this.id = Date.now();
-        this.content = content;
-      }
-
-      const templateContent = templateTexts.reduce((acc, cus) => {
-        return (acc +=
-          cus.innerText.replace(/\u200B/g, "") === ""
-            ? `\n`
-            : cus.innerText + "\n");
-      }, "");
-
-      const template = new TemplateObject(templateContent);
-      const getTemplate = localStorage.getItem("template") ?? "[]";
-      const saveTemplate = [...JSON.parse(getTemplate), template];
-
-      setLocalStorage(saveTemplate);
-    });
+    button.addEventListener('click', handlerAddTemplate);
+    getTemplateBtn();
   };
 
-  const getTemplateBtn = () => {
-    const template = document.createElement("div");
-    template.setAttribute("id", "template-btn-wrapper");
-    template.innerHTML = "";
+  function handlerAddTemplate() {
+    const templateTexts = Array.from(selectAll()('.CodeMirror-line'));
 
-    const getTemplate = JSON.parse(localStorage.getItem("template") ?? "[]");
-    getTemplate.forEach((item, index) => {
-      const button = document.createElement("button");
+    function TemplateObject(content) {
+      this.id = Date.now();
+      this.content = content;
+    }
+
+    const templateContent = templateTexts.reduce((acc, cur) => {
+      return (acc +=
+        cur.innerText.replace(/\u200B/g, '') === ''
+          ? `\n`
+          : cur.innerText + '\n');
+    }, '');
+
+    const template = new TemplateObject(templateContent);
+    const storgedTemplate = getStorage('template') ?? [];
+    const saveTemplate = [...storgedTemplate, template];
+
+    setTemplate(saveTemplate);
+    getTemplateBtn();
+  }
+  const setDisplay = (element) => {
+    return (str) => (element.style.display = str);
+  };
+  const getTemplateBtn = () => {
+    let templateBtnWrapper = select()('#template-btn-wrapper');
+    if (!templateBtnWrapper) {
+      templateBtnWrapper = create('div');
+      templateBtnWrapper.setAttribute('id', 'template-btn-wrapper');
+    }
+    templateBtnWrapper.innerHTML = '';
+
+    const storagedTemplate = getStorage('template') ?? [];
+
+    storagedTemplate.forEach((_, index) => {
+      const button = create('button');
       button.innerText = `${index}번 템플릿`;
       button.dataset.index = index;
-      template.append(button);
+      templateBtnWrapper.append(button);
     });
-    templateWrapper.append(template);
-    // 템플릿 버튼 이벤트 등록
-    const templateBtns = document.querySelectorAll(
-      "#template-btn-wrapper button",
-    );
-    templateBtns.forEach((btn) => {
-      btn.addEventListener("click", (event) => {
-        const index = event.target.dataset.index;
-        // 붙여넣기 대상
-        const textArea = document.querySelector(".CodeMirror textarea");
 
-        // clipboard 객체 생성
-        const clipboard = new ClipboardEvent("paste", {
+    append(templateWrapper, templateBtnWrapper);
+
+    const templateBtns = selectAll()('#template-btn-wrapper button');
+
+    templateBtns.forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        const index = event.target.dataset.index;
+        const textArea = select()('.CodeMirror textarea');
+
+        const clipboard = new ClipboardEvent('paste', {
           clipboardData: new DataTransfer(),
         });
 
-        // cliboard에 데이터 주입
         clipboard.clipboardData.items.add(
-          getTemplate[index].content,
-          "text/plain",
+          storagedTemplate[index].content,
+          'text/plain',
         );
 
-        // clipboard 이벤트 실행
         textArea.dispatchEvent(clipboard);
       });
     });
   };
-  appendSaveTemplateBtn();
-  getTemplateBtn();
 
+  let observer;
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
-    console.log("herf is executing");
-    if (!isMatched) return;
+    if (!isMatched) {
+      setDisplay(templateWrapper)('none');
+      return;
+    }
+    const codeMirror = select()('.CodeMirror');
+    if (!codeMirror) {
+      observer = new MutationObserver(function () {
+        if (document.querySelector('.CodeMirror')) {
+          setDisplay(templateWrapper)('block');
+          toggleButtonExecute();
+          appendSaveTemplateBtn();
+          observer.disconnect();
+        }
+      });
+
+      setDisplay(templateWrapper)('none');
+      const target = document.querySelector('#root');
+      const config = { childList: true };
+      observer.observe(target, config);
+      return;
+    }
+    setDisplay(templateWrapper)('block');
     toggleButtonExecute();
+    appendSaveTemplateBtn();
   });
+  setDisplay(templateWrapper)('block');
   toggleButtonExecute();
+  appendSaveTemplateBtn();
 })();
