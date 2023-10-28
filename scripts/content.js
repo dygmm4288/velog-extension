@@ -133,10 +133,14 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
       });
     });
   };
+
   let observer;
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
-    if (!isMatched) return;
+    if (!isMatched) {
+      setDisplay(templateWrapper)('none');
+      return;
+    }
     const codeMirror = select()('.CodeMirror');
     if (!codeMirror) {
       observer = new MutationObserver(function () {
@@ -147,6 +151,8 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
           observer.disconnect();
         }
       });
+
+      setDisplay(templateWrapper)('none');
       const target = document.querySelector('#root');
       const config = { childList: true };
       observer.observe(target, config);
