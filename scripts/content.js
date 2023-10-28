@@ -92,6 +92,7 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
       const saveTemplate = [...JSON.parse(getTemplate), template];
 
       setLocalStorage(saveTemplate);
+      getTemplateBtn();
     });
   };
 
@@ -144,6 +145,7 @@ const UTIL_SRC = chrome.runtime.getURL("scripts/common/util.js");
     if (!isMatched) return;
     toggleButtonExecute();
     appendSaveTemplateBtn();
+    getTemplateBtn();
   });
   toggleButtonExecute();
 })();
