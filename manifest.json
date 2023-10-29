@@ -5,7 +5,7 @@
   "version": "2.0.0",
   "author": "dlwlsghgk124@naver.com",
 
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "/images/icon-16.png",
       "32": "/images/icon-32.png",
@@ -15,7 +15,7 @@
     "default_title": "velog-extension",
     "default_popup": "/popup.html"
   },
-  "permissions": ["tabs", "history", "nativeMessaging", "storage"],
+  "permissions": ["tabs", "history", "nativeMessaging", "storage", "scripting", "activeTab"],
   "icons": {
     "16": "/images/icon-16.png",
     "32": "/images/icon-32.png",

@@ -67,7 +67,6 @@ const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
     append(body, append(templateWrapper, button));
 
     button.addEventListener('click', handlerAddTemplate);
-    getTemplateBtn();
   };
 
   async function handlerAddTemplate() {
@@ -94,59 +93,44 @@ const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
     const saveTemplate = [...storgedTemplate, template];
 
     setTemplate(saveTemplate);
-    getTemplateBtn();
   }
   const setDisplay = (element) => {
     return (str) => (element.style.display = str);
   };
-  const getTemplateBtn = async () => {
-    let templateBtnWrapper = select()('#template-btn-wrapper');
-    if (!templateBtnWrapper) {
-      templateBtnWrapper = create('div');
-      templateBtnWrapper.setAttribute('id', 'template-btn-wrapper');
-    }
-    templateBtnWrapper.innerHTML = '';
 
+  const pasteTemplate = async (index) => {
     const { velog_preview_template } = await getStorage(
       VELOG_PREVIEW_TEMPLATE_KEY,
     );
     const storagedTemplate = JSON.parse(velog_preview_template) ?? [];
 
-    storagedTemplate.forEach((_, index) => {
-      const button = create('button');
-      button.innerText = `${index}번 템플릿`;
-      button.dataset.index = index;
-      templateBtnWrapper.append(button);
+    const textArea = select()('.CodeMirror textarea');
+
+    const clipboard = new ClipboardEvent('paste', {
+      clipboardData: new DataTransfer(),
     });
 
-    append(templateWrapper, templateBtnWrapper);
+    clipboard.clipboardData.items.add(
+      storagedTemplate[index].content,
+      'text/plain',
+    );
 
-    const templateBtns = selectAll()('#template-btn-wrapper button');
-
-    templateBtns.forEach((btn) => {
-      btn.addEventListener('click', (event) => {
-        const index = event.target.dataset.index;
-        const textArea = select()('.CodeMirror textarea');
-
-        const clipboard = new ClipboardEvent('paste', {
-          clipboardData: new DataTransfer(),
-        });
-
-        clipboard.clipboardData.items.add(
-          storagedTemplate[index].content,
-          'text/plain',
-        );
-
-        textArea.dispatchEvent(clipboard);
-      });
-    });
+    textArea.dispatchEvent(clipboard);
   };
-
-  chrome.tab.
 
   let observer;
   chrome.runtime.onMessage.addListener((obj) => {
-    const { isMatched } = obj;
+    const {
+      isMatched,
+      message: { index, type },
+    } = obj;
+
+    if (type === 'set') {
+      pasteTemplate(index);
+      return;
+    }
+
+    console.log(isMatched);
     if (!isMatched) {
       setDisplay(templateWrapper)('none');
       return;

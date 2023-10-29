@@ -9,5 +9,8 @@ chrome.history.onVisited.addListener(async (historyItem) => {
   const isMatched = !!url.match(pattern);
 
   const { id } = await getCurrentTab();
-  chrome.tabs.sendMessage(id, { isMatched });
+  chrome.tabs.sendMessage(id, {
+    isMatched,
+    message: { index: 0, type: 'none' },
+  });
 });
