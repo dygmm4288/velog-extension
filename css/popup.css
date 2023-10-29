@@ -1,0 +1,141 @@
+/*Reset*/
+body,
+div {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-size: unset;
+  font-weight: unset;
+  margin: 0;
+  pointer-events: none;
+}
+
+button {
+  border: unset;
+  border-radius: unset;
+  padding: unset;
+  margin: unset;
+  background-color: unset;
+  cursor: pointer;
+}
+
+/*Typography*/
+:root {
+  --font-color: #2f3640;
+  --border-radius: 0.5rem;
+
+  /*btn group*/
+  --del-color: #ffffff;
+  --del-color-hover: #e74c3c;
+  --btn-font-color: #ffffff;
+}
+html {
+  font-size: 62.5%;
+}
+body {
+  width: 30rem;
+  max-width: 35rem;
+  height: auto;
+  display: flex;
+  padding: 0 1rem;
+  color: var(--font-color);
+  font-family:
+    'Basier circle',
+    -apple-system,
+    system-ui,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji';
+}
+
+/*Content*/
+.container {
+  margin: 0 auto;
+  width: 30rem;
+  height: auto;
+  max-height: 50rem;
+  overflow: scroll;
+  scrollbar-width: none;
+}
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.container > header {
+  display: flex;
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin: 1.5rem 0;
+}
+.container > header h1 {
+  margin: 0 auto;
+}
+
+.template-card {
+  padding: 1rem;
+  height: 10rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border: 0.1rem solid var(--font-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+}
+
+.template-card {
+  transition:
+    background-color 0.2s ease-in,
+    color 0.2s ease-in;
+}
+.template-card:hover {
+  background-color: var(--font-color);
+  color: white;
+}
+.template-card section {
+  height: 50%;
+  display: flex;
+  cursor: pointer;
+}
+.template-card .template-card__text-wrapper {
+  cursor: pointer;
+}
+.template-card .template-card__text-wrapper h1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.template-card .template-card__button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.template-card .template-card__button-wrapper button {
+  padding: 0 1.5rem;
+  border-radius: var(--border-radius);
+}
+
+.template-card .template-card__button-wrapper button.del {
+  color: var(--font-color);
+  background-color: var(--del-color);
+  border: 0.1rem solid var(--del-color-hover);
+  transition:
+    background-color 0.2s ease-in,
+    color 0.2s ease-in;
+}
+.template-card .template-card__button-wrapper button.del:hover {
+  background-color: var(--del-color-hover);
+  color: var(--del-color);
+}
