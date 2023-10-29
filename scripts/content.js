@@ -118,6 +118,38 @@ const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
     textArea.dispatchEvent(clipboard);
   };
 
+  select()('#toolbar').style.transition = 'none';
+  function createModeChangeBtn() {
+    const $modeChangeBtn = create('button');
+    const templateWrapper_modeChange = create('div');
+    templateWrapper_modeChange.style.cssText = `
+      position: absolute;
+      top : 0;
+      left : 0;
+      width:auto;
+      height: auto;
+    `;
+    $modeChangeBtn.innerText = '모드체인지';
+    append(body, append(templateWrapper_modeChange, $modeChangeBtn));
+    $modeChangeBtn.addEventListener('click', modeChangeHandler);
+  }
+
+  function modeChangeHandler() {
+    const $body = select()('body');
+    const currentMode = $body.dataset['theme'];
+    const $codeMirror = select()('.CodeMirror');
+
+    if (currentMode === 'dark') {
+      $body.dataset['theme'] = 'light';
+      $codeMirror.classList.remove('cm-s-one-dark');
+      $codeMirror.classList.add('cm-s-one-light');
+    } else if (currentMode === 'light') {
+      $body.dataset['theme'] = 'dark';
+      $codeMirror.classList.remove('cm-s-one-light');
+      $codeMirror.classList.add('cm-s-one-dark');
+    }
+  }
+
   let observer;
   chrome.runtime.onMessage.addListener((obj) => {
     const {
@@ -142,6 +174,7 @@ const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
           setDisplay(templateWrapper)('block');
           toggleButtonExecute();
           appendSaveTemplateBtn();
+          createModeChangeBtn();
           observer.disconnect();
         }
       });
@@ -155,6 +188,7 @@ const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
     setDisplay(templateWrapper)('block');
     toggleButtonExecute();
     appendSaveTemplateBtn();
+    createModeChangeBtn();
   });
   const currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -162,5 +196,6 @@ const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
     setDisplay(templateWrapper)('block');
     toggleButtonExecute();
     appendSaveTemplateBtn();
+    createModeChangeBtn();
   }
 })();
