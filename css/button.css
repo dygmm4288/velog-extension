@@ -1,0 +1,11 @@
+.change-mode-btn {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--text3);
+}
+
+.change-mode-btn:hover {
+  color: var(--text1);
+  background-color: var(--bg-element2);
+}
