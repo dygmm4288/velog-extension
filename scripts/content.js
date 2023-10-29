@@ -134,6 +134,10 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     });
   };
 
+  function createModeChangeBtn() {
+    $modeChangeBtn = document.createElement('button');
+  }
+
   let observer;
   chrome.runtime.onMessage.addListener((obj) => {
     const { isMatched } = obj;
