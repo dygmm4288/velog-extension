@@ -3,6 +3,7 @@ const FOOTER_CONTAINER_SELECTOR =
   '[data-testid="codemirror"] > div:last-child > div';
 const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
 
+const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
 (async () => {
   const { select, selectAll, append, setStorage, getStorage, create } =
     await import(UTIL_SRC);
@@ -56,7 +57,7 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
   `;
 
   function setTemplate(saveTemplate) {
-    return setStorage('template', saveTemplate);
+    return setStorage(VELOG_PREVIEW_TEMPLATE_KEY, saveTemplate);
   }
 
   const appendSaveTemplateBtn = () => {
@@ -69,7 +70,7 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     getTemplateBtn();
   };
 
-  function handlerAddTemplate() {
+  async function handlerAddTemplate() {
     const templateTexts = Array.from(selectAll()('.CodeMirror-line'));
 
     function TemplateObject(content) {
@@ -85,7 +86,11 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     }, '');
 
     const template = new TemplateObject(templateContent);
-    const storgedTemplate = getStorage('template') ?? [];
+    const { velog_preview_template } = await getStorage(
+      VELOG_PREVIEW_TEMPLATE_KEY,
+    );
+
+    const storgedTemplate = JSON.parse(velog_preview_template) ?? [];
     const saveTemplate = [...storgedTemplate, template];
 
     setTemplate(saveTemplate);
@@ -94,7 +99,7 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
   const setDisplay = (element) => {
     return (str) => (element.style.display = str);
   };
-  const getTemplateBtn = () => {
+  const getTemplateBtn = async () => {
     let templateBtnWrapper = select()('#template-btn-wrapper');
     if (!templateBtnWrapper) {
       templateBtnWrapper = create('div');
@@ -102,7 +107,10 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
     }
     templateBtnWrapper.innerHTML = '';
 
-    const storagedTemplate = getStorage('template') ?? [];
+    const { velog_preview_template } = await getStorage(
+      VELOG_PREVIEW_TEMPLATE_KEY,
+    );
+    const storagedTemplate = JSON.parse(velog_preview_template) ?? [];
 
     storagedTemplate.forEach((_, index) => {
       const button = create('button');
@@ -133,6 +141,8 @@ const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
       });
     });
   };
+
+  chrome.tab.
 
   let observer;
   chrome.runtime.onMessage.addListener((obj) => {
