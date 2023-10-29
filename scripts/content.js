@@ -162,7 +162,6 @@ const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
       return;
     }
 
-    console.log(isMatched);
     if (!isMatched) {
       setDisplay(templateWrapper)('none');
       return;
