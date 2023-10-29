@@ -78,13 +78,13 @@ const btnAddEvent = () => {
   // 적용할 템플릿 버튼 찾아오기
   const setTemplateBtns = selectAll()('.template-card');
   // 템플릿 삭제 버튼 찾아오기
-  setTemplateBtns.forEach(async (btn) => {
-    btn.addEventListener('click', await setTemplate, { capture: false });
+  setTemplateBtns.forEach((btn) => {
+    btn.addEventListener('click', setTemplate, { capture: false });
   });
 
   const delTemplateBtns = selectAll()('.del');
-  delTemplateBtns.forEach(async (btn) => {
-    btn.addEventListener('click', await delTemplate, { capture: false });
+  delTemplateBtns.forEach((btn) => {
+    btn.addEventListener('click', delTemplate, { capture: false });
   });
 };
 
