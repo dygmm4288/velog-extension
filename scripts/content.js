@@ -4,6 +4,7 @@ const PREVIEW_TOGGLE_BTN_SRC = chrome.runtime.getURL(
 );
 const TEMPLATE_SRC = chrome.runtime.getURL('scripts/template.js');
 const THEME_BTN_SRC = chrome.runtime.getURL('scripts/themeBtn.js');
+const TEMPLATE_BTN_SRC = chrome.runtime.getURL('scripts/templateBtn.js');
 
 function setDisplay(element) {
   return (str) => (element.style.display = str);
@@ -15,6 +16,7 @@ function setDisplay(element) {
   const { appendSaveTemplateBtn, templateWrapper, pasteTemplate } =
     await import(TEMPLATE_SRC);
   const { appendThemeBtn } = await import(THEME_BTN_SRC);
+  const { appendTemplateBtn } = await import(TEMPLATE_BTN_SRC);
 
   let observer;
 
@@ -26,7 +28,9 @@ function setDisplay(element) {
     appendToggleButton();
     appendSaveTemplateBtn();
     appendThemeBtn($toolbar);
+    appendTemplateBtn($toolbar);
   }
+
   chrome.runtime.onMessage.addListener((obj) => {
     const {
       isMatched,
@@ -65,4 +69,14 @@ function setDisplay(element) {
   if (url.pathname === '/write') {
     appendFunctions();
   }
+
+  document.addEventListener('click', (e) => {
+    console.log(e.target.matches('.template-wrapper *'), e.target);
+    if (e.target.matches('.template-wrapper *')) return;
+
+    const ul = select()('.template-list-wrapper');
+    if (ul && ul.classList.contains('active')) {
+      ul.classList.remove('active');
+    }
+  });
 })();
