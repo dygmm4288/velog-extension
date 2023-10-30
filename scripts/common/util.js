@@ -18,9 +18,21 @@ export async function setStorage(key, value) {
   return { [key]: value };
 }
 export async function getStorage(key) {
-  return await chrome.storage.local.get([key]);
+  const result = await chrome.storage.local.get([key]);
+  if (!result[key]) return null;
+  return JSON.parse(result[key]);
 }
 
-export function create(tag) {
-  return document.createElement(tag);
+export function create(tag, className) {
+  const result = document.createElement(tag);
+
+  if (className) {
+    result.classList.add(...className.split(' '));
+  }
+  return result;
+}
+
+export function tab(x) {
+  console.log(x);
+  return x;
 }
