@@ -2,22 +2,21 @@ import {
   append,
   create,
   getStorage,
-  setStorage,
   select,
   selectAll,
+  setStorage,
 } from './common/util.js';
 
 const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
 
 // template card 생성
 const createTemplateCard = async () => {
-  const { velog_preview_template } = await getStorage(
-    VELOG_PREVIEW_TEMPLATE_KEY,
-  );
+  const velog_preview_template = await getStorage(VELOG_PREVIEW_TEMPLATE_KEY);
   const $container = select()('.container');
   const $templateCards = select()('.template-cards');
+
   $templateCards.innerHTML = '';
-  JSON.parse(velog_preview_template).forEach((template, index) => {
+  velog_preview_template.forEach((template, index) => {
     //
     // tamplate wrapper 생성
     const $templateWrapper = create('div');
@@ -47,11 +46,9 @@ async function setTemplate(event) {
 
 async function delTemplate(event) {
   event.stopPropagation();
-  const { velog_preview_template } = await getStorage(
-    VELOG_PREVIEW_TEMPLATE_KEY,
-  );
+  const velog_preview_template = await getStorage(VELOG_PREVIEW_TEMPLATE_KEY);
   const templateId = parseInt(event.target.dataset.id);
-  const newTemplate = JSON.parse(velog_preview_template).filter((item) => {
+  const newTemplate = velog_preview_template.filter((item) => {
     return item.id !== templateId;
   });
 
