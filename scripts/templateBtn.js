@@ -1,5 +1,9 @@
 import { append, create, getStorage, select } from './common/util.js';
-import { VELOG_PREVIEW_TEMPLATE_KEY, pasteTemplate } from './template.js';
+import {
+  VELOG_PREVIEW_TEMPLATE_KEY,
+  handleAddTemplate,
+  pasteTemplate,
+} from './template.js';
 
 function createTemplateBtn() {
   const $templateBtn = create('button', 'ixiTKc template-btn');
@@ -11,21 +15,33 @@ function createTemplateBtn() {
   $templateBtn.addEventListener('click', handleClickTemplateButton);
   return $templateBtn;
 }
-async function appendTemplateList() {
+export async function createTemplateList() {
   let $templateList = select()('.template-list-wrapper');
   if (!$templateList) {
     $templateList = create('ul', 'template-list-wrapper');
   }
-  // 재랜더링 전에 이벤트 리스터 지우기
   $templateList
     .querySelectorAll('li')
     .forEach((listItem) =>
       listItem.removeEventListener('click', handleClickTemplateListItem),
     );
   $templateList.innerHTML = '';
-
   const template = await getStorage(VELOG_PREVIEW_TEMPLATE_KEY);
-  const $templateItems = template.map(({ id, content }, index) => {
+  const $templateItems = createTemplateItem(template);
+  return append($templateList, $templateItems);
+}
+function createSaveTemplateBtn() {
+  let $button = select()('template-save-btn');
+  if (!$button) {
+    $button = create('button', 'template-save-btn');
+  }
+  $button.removeEventListener('click', handleAddTemplate);
+  $button.innerText = '템플릿 저장하기';
+  $button.addEventListener('click', handleAddTemplate);
+  return $button;
+}
+function createTemplateItem(template) {
+  return template.map(({ id, content }, index) => {
     const $templateItem = create('li', 'template-list-item');
     $templateItem.dataset.id = id;
     $templateItem.addEventListener(
@@ -35,17 +51,16 @@ async function appendTemplateList() {
     $templateItem.innerText = `${index}번째 템플릿`;
     return $templateItem;
   });
-  return append($templateList, $templateItems);
 }
 function handleClickTemplateButton() {
-  const $templateListWrapper = select()('.template-list-wrapper');
+  const $templateContentContainer = select()('.template-content-container');
 
-  if (!$templateListWrapper) return;
+  if (!$templateContentContainer) return;
 
-  if (!$templateListWrapper.classList.contains('active')) {
-    appendTemplateList();
+  if (!$templateContentContainer.classList.contains('active')) {
+    createTemplateList();
   }
-  $templateListWrapper.classList.toggle('active');
+  $templateContentContainer.classList.toggle('active');
 }
 function handleClickTemplateListItem(index, content) {
   return () => {
@@ -55,18 +70,15 @@ function handleClickTemplateListItem(index, content) {
 
 export async function appendTemplateBtn($toolbar) {
   const $templateWrapper = create('div', 'template-wrapper');
-  return append(
-    $toolbar,
-    append($templateWrapper, [createTemplateBtn(), await appendTemplateList()]),
-  );
+  let $templateContentContainer = select()('.template-content-container');
+  if (!$templateContentContainer) {
+    $templateContentContainer = append(
+      create('div', 'template-content-container'),
+      [createSaveTemplateBtn(), await createTemplateList()],
+    );
+  }
+  return append($toolbar, [
+    createTemplateBtn(),
+    append($templateWrapper, $templateContentContainer),
+  ]);
 }
-/* 
-
-<div class="template-wrapper">
-  <ul class="template-list-wrapper active">
-    <li class="template-list-item">$번 템플릿</li>
-  </ul>
-</div>
-
-
-*/

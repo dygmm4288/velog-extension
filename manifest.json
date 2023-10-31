@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "velog-extension",
   "description": "It can be used more conveniently when you use velog site",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "author": "dlwlsghgk124@naver.com",
 
   "action": {

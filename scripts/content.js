@@ -13,8 +13,7 @@ function setDisplay(element) {
 (async () => {
   const { select } = await import(UTIL_SRC);
   const { appendToggleButton } = await import(PREVIEW_TOGGLE_BTN_SRC);
-  const { appendSaveTemplateBtn, templateWrapper, pasteTemplate } =
-    await import(TEMPLATE_SRC);
+  const { pasteTemplate } = await import(TEMPLATE_SRC);
   const { appendThemeBtn } = await import(THEME_BTN_SRC);
   const { appendTemplateBtn } = await import(TEMPLATE_BTN_SRC);
 
@@ -24,9 +23,7 @@ function setDisplay(element) {
     const $toolbar = select()('#toolbar');
     $toolbar.style.transition = 'none';
 
-    setDisplay(templateWrapper)('block');
     appendToggleButton();
-    appendSaveTemplateBtn();
     appendThemeBtn($toolbar);
     appendTemplateBtn($toolbar);
   }
@@ -43,7 +40,6 @@ function setDisplay(element) {
     }
 
     if (!isMatched) {
-      setDisplay(templateWrapper)('none');
       return;
     }
     const codeMirror = select()('.CodeMirror');
@@ -55,8 +51,6 @@ function setDisplay(element) {
           observer.disconnect();
         }
       });
-
-      setDisplay(templateWrapper)('none');
       const target = select()('#root');
       const config = { childList: true };
       observer.observe(target, config);
@@ -71,12 +65,20 @@ function setDisplay(element) {
   }
 
   document.addEventListener('click', (e) => {
-    console.log(e.target.matches('.template-wrapper *'), e.target);
-    if (e.target.matches('.template-wrapper *')) return;
+    if (
+      e.target.matches('.template-wrapper *') ||
+      e.target.matches('.template-btn *') ||
+      e.target.matches('.template-btn') ||
+      e.target.matches('.template-wrapper')
+    )
+      return;
 
-    const ul = select()('.template-list-wrapper');
-    if (ul && ul.classList.contains('active')) {
-      ul.classList.remove('active');
+    const $templateContentContainer = select()('.template-content-container');
+    if (
+      $templateContentContainer &&
+      $templateContentContainer.classList.contains('active')
+    ) {
+      $templateContentContainer.classList.remove('active');
     }
   });
 })();

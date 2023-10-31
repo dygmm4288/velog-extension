@@ -9,7 +9,6 @@ import {
 
 const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
 
-// template card 생성
 const createTemplateCard = async () => {
   const velog_preview_template = await getStorage(VELOG_PREVIEW_TEMPLATE_KEY);
   const $container = select()('.container');
@@ -17,8 +16,6 @@ const createTemplateCard = async () => {
 
   $templateCards.innerHTML = '';
   velog_preview_template.forEach((template, index) => {
-    //
-    // tamplate wrapper 생성
     const $templateWrapper = create('div');
     $templateWrapper.classList.add('template-card');
     $templateWrapper.dataset.index = index;
@@ -72,9 +69,7 @@ const sendMessage = (sendData) => {
 };
 
 const btnAddEvent = () => {
-  // 적용할 템플릿 버튼 찾아오기
   const setTemplateBtns = selectAll()('.template-card');
-  // 템플릿 삭제 버튼 찾아오기
   setTemplateBtns.forEach((btn) => {
     btn.addEventListener('click', setTemplate, { capture: false });
   });
