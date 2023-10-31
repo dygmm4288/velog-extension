@@ -17,7 +17,7 @@
 .template-wrapper {
   position: relative;
 }
-.template-list-wrapper {
+.template-content-container {
   position: absolute;
   width: 350px;
   height: 0px;
@@ -28,18 +28,23 @@
   border-radius: 0.5rem;
   background-color: white;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
-
   transition: height 0.3s ease;
-  list-style: none;
-
-  margin: 0;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-.template-list-wrapper.active {
+.template-content-container.active {
   height: 500px;
   overflow: scroll;
   border: 1px solid black;
   padding: 0.5rem;
+}
+.template-list-wrapper {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 .template-list-item {
   width: 100%;

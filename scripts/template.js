@@ -1,15 +1,9 @@
-import {
-  append,
-  create,
-  getStorage,
-  select,
-  selectAll,
-  setStorage,
-} from './common/util.js';
+import { getStorage, select, selectAll, setStorage } from './common/util.js';
+import { createTemplateList } from './templateBtn.js';
 
 export const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
 
-export const templateWrapper = create('div');
+/* export const templateWrapper = create('div');
 
 templateWrapper.style.cssText = `
     position: absolute;
@@ -17,12 +11,12 @@ templateWrapper.style.cssText = `
     right: 0;
     widht: 300px;
     height: auto;
-  `;
+  `; */
 function setTemplate(saveTemplate) {
   return setStorage(VELOG_PREVIEW_TEMPLATE_KEY, saveTemplate);
 }
 
-async function handleAddTemplate() {
+export async function handleAddTemplate() {
   const templateTexts = Array.from(selectAll()('.CodeMirror-line'));
 
   class TemplateObject {
@@ -44,6 +38,14 @@ async function handleAddTemplate() {
     (await getStorage(VELOG_PREVIEW_TEMPLATE_KEY)) ?? [];
   const saveTemplate = [...velog_preview_template, template];
   setTemplate(saveTemplate);
+
+  const $templateContentContainer = select()('.template-content-container');
+  if (
+    $templateContentContainer &&
+    $templateContentContainer.classList.contains('active')
+  ) {
+    createTemplateList();
+  }
 }
 /**
  *
@@ -68,13 +70,4 @@ export async function pasteTemplate(index, prevContent) {
 
   const textArea = select()('.CodeMirror textarea');
   textArea.dispatchEvent(clipboard);
-}
-export function appendSaveTemplateBtn() {
-  const button = create('button');
-  const body = select()('body');
-  button.innerText = '템플릿 저장';
-  templateWrapper.innerHTML = '';
-  append(body, append(templateWrapper, button));
-
-  button.addEventListener('click', handleAddTemplate);
 }
