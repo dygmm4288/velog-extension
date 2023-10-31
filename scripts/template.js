@@ -18,12 +18,6 @@ templateWrapper.style.cssText = `
     widht: 300px;
     height: auto;
   `;
-/**
- *
- * @param {string} saveTemplate
- * @returns json string
- * 로컬스토리지에 템플릿을 저장하는 함수
- */
 function setTemplate(saveTemplate) {
   return setStorage(VELOG_PREVIEW_TEMPLATE_KEY, saveTemplate);
 }

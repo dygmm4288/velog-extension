@@ -71,7 +71,6 @@ function setDisplay(element) {
   }
 
   document.addEventListener('click', (e) => {
-    console.log(e.target.matches('.template-wrapper *'), e.target);
     if (e.target.matches('.template-wrapper *')) return;
 
     const ul = select()('.template-list-wrapper');

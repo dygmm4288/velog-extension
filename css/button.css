@@ -49,8 +49,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: black;
   cursor: pointer;
 }
 .template-list-item:last-child {
   border-bottom: none;
+}
+@media (max-width: 890px) {
+  .template-list-wrapper {
+    right: 100%;
+  }
 }

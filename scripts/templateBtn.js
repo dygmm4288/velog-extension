@@ -16,7 +16,6 @@ async function appendTemplateList() {
   if (!$templateList) {
     $templateList = create('ul', 'template-list-wrapper');
   }
-  // 재랜더링 전에 이벤트 리스터 지우기
   $templateList
     .querySelectorAll('li')
     .forEach((listItem) =>
@@ -60,13 +59,3 @@ export async function appendTemplateBtn($toolbar) {
     append($templateWrapper, [createTemplateBtn(), await appendTemplateList()]),
   );
 }
-/* 
-
-<div class="template-wrapper">
-  <ul class="template-list-wrapper active">
-    <li class="template-list-item">$번 템플릿</li>
-  </ul>
-</div>
-
-
-*/
