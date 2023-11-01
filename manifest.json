@@ -32,9 +32,9 @@
 
   "content_scripts": [
     {
-      "js": ["scripts/content.js"],
+      "js": ["scripts/content.js", "external/pickr/pickr.min.js"],
       "matches": ["https://velog.io/*"],
-      "css": ["css/button.css"]
+      "css": ["css/button.css", "external/pickr/themes/nano.min.css"]
     }
   ],
   "background": {
