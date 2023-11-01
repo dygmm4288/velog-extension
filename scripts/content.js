@@ -5,10 +5,13 @@ const PREVIEW_TOGGLE_BTN_SRC = chrome.runtime.getURL(
 const TEMPLATE_SRC = chrome.runtime.getURL('scripts/template.js');
 const THEME_BTN_SRC = chrome.runtime.getURL('scripts/themeBtn.js');
 const TEMPLATE_BTN_SRC = chrome.runtime.getURL('scripts/templateBtn.js');
+const COLOR_BTN_SRC = chrome.runtime.getURL('scripts/colorBtn.js');
 
 function setDisplay(element) {
   return (str) => (element.style.display = str);
 }
+
+let initTextColorButton = null;
 
 (async () => {
   const { select } = await import(UTIL_SRC);
@@ -16,6 +19,8 @@ function setDisplay(element) {
   const { pasteTemplate } = await import(TEMPLATE_SRC);
   const { appendThemeBtn } = await import(THEME_BTN_SRC);
   const { appendTemplateBtn } = await import(TEMPLATE_BTN_SRC);
+  const { appendColorBtn, initColorButton } = await import(COLOR_BTN_SRC);
+  initTextColorButton = initColorButton;
 
   let observer;
 
@@ -24,6 +29,7 @@ function setDisplay(element) {
     $toolbar.style.transition = 'none';
 
     appendToggleButton();
+    appendColorBtn($toolbar);
     appendThemeBtn($toolbar);
     appendTemplateBtn($toolbar);
   }
@@ -81,4 +87,9 @@ function setDisplay(element) {
       $templateContentContainer.classList.remove('active');
     }
   });
-})();
+})().then(() => {
+  // colorPicker의 경우 custom 버튼이 추가 된 후 로드 필요
+  const $hiddenTextArea = document.querySelectorAll('textarea')[2];
+  $hiddenTextArea.id = 'hiddenTextArea';
+  initTextColorButton();
+});
