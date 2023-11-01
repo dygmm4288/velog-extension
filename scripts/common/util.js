@@ -19,7 +19,7 @@ export async function setStorage(key, value) {
 }
 export async function getStorage(key) {
   const result = await chrome.storage.local.get([key]);
-  if (!result[key]) return null;
+  if (!result[key]) return [];
   return JSON.parse(result[key]);
 }
 

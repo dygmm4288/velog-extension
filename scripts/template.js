@@ -3,15 +3,6 @@ import { createTemplateList } from './templateBtn.js';
 
 export const VELOG_PREVIEW_TEMPLATE_KEY = 'velog_preview_template';
 
-/* export const templateWrapper = create('div');
-
-templateWrapper.style.cssText = `
-    position: absolute;
-    top : 0;
-    right: 0;
-    widht: 300px;
-    height: auto;
-  `; */
 function setTemplate(saveTemplate) {
   return setStorage(VELOG_PREVIEW_TEMPLATE_KEY, saveTemplate);
 }
