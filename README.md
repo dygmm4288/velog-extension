@@ -15,6 +15,9 @@ velog 블로그 글 작성을 더 편리하게 해주는 크롬 확장 프로그
 ![템플릿버튼](https://github.com/dygmm4288/velog-preview-extension/assets/55860930/f4c9fd6f-3e40-4740-b706-1e41ffe7a0a4)
 ## 다크테마 버튼
 ![다크테마버튼](https://github.com/dygmm4288/velog-preview-extension/assets/55860930/102d4cf5-e8fa-479c-9313-ca55b6ddae88)
+## 컬러 추가 버튼
+![컬러버튼](https://github.com/dygmm4288/velog-extension/assets/55860930/d8cbb03d-7b22-43a9-9bfc-5134adf970c5)
+
 
 
 
