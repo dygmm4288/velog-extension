@@ -27,6 +27,10 @@ export function create(tag, className) {
   const result = document.createElement(tag);
 
   if (className) {
+    if (Array.isArray(className)) {
+      result.classList.add(className);
+      return result;
+    }
     result.classList.add(...className.split(' '));
   }
   return result;

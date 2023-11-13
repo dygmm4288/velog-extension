@@ -1,4 +1,4 @@
-import { select, selectAll } from './common/util.js';
+import { create, select, selectAll } from './common/util.js';
 const FOOTER_CONTAINER_SELECTOR =
   '[data-testid="codemirror"] > div:last-child > div';
 const PREVIEW_DIV_SELECTOR = '[data-testid="right"]';
@@ -9,8 +9,7 @@ const BUTTON_COTAINER_CLASS = 'jYsOEX';
 const BUTTON_FONT_CLASS = 'gRPveD';
 
 function createButton() {
-  $button = document.createElement('button');
-  $button.classList.add(BUTTON_COTAINER_CLASS, BUTTON_FONT_CLASS);
+  $button = create('button', [BUTTON_COTAINER_CLASS, BUTTON_FONT_CLASS]);
 
   $button.innerText = '미리보기 토글';
   $button.dataset.toggle = 'true';
