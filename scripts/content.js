@@ -6,6 +6,7 @@ const TEMPLATE_SRC = chrome.runtime.getURL('scripts/template.js');
 const THEME_BTN_SRC = chrome.runtime.getURL('scripts/themeBtn.js');
 const TEMPLATE_BTN_SRC = chrome.runtime.getURL('scripts/templateBtn.js');
 const COLOR_BTN_SRC = chrome.runtime.getURL('scripts/colorBtn.js');
+const TEXT_ALIGN_SRC = chrome.runtime.getURL('scripts/textAlign.js');
 
 function setDisplay(element) {
   return (str) => (element.style.display = str);
@@ -20,6 +21,7 @@ let initTextColorButton = null;
   const { appendThemeBtn } = await import(THEME_BTN_SRC);
   const { appendTemplateBtn } = await import(TEMPLATE_BTN_SRC);
   const { appendColorBtn, initColorButton } = await import(COLOR_BTN_SRC);
+  const { appendTextAlignBtn } = await import(TEXT_ALIGN_SRC);
   initTextColorButton = initColorButton;
 
   let observer;
@@ -32,6 +34,7 @@ let initTextColorButton = null;
     appendColorBtn($toolbar);
     appendThemeBtn($toolbar);
     appendTemplateBtn($toolbar);
+    appendTextAlignBtn($toolbar);
   }
 
   chrome.runtime.onMessage.addListener((obj) => {
