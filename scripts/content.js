@@ -8,10 +8,6 @@ const TEMPLATE_BTN_SRC = chrome.runtime.getURL('scripts/templateBtn.js');
 const COLOR_BTN_SRC = chrome.runtime.getURL('scripts/colorBtn.js');
 const TEXT_ALIGN_SRC = chrome.runtime.getURL('scripts/textAlign.js');
 
-function setDisplay(element) {
-  return (str) => (element.style.display = str);
-}
-
 let initTextColorButton = null;
 
 (async () => {
