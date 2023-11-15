@@ -7,6 +7,9 @@ const THEME_BTN_SRC = chrome.runtime.getURL('scripts/themeBtn.js');
 const TEMPLATE_BTN_SRC = chrome.runtime.getURL('scripts/templateBtn.js');
 const COLOR_BTN_SRC = chrome.runtime.getURL('scripts/colorBtn.js');
 const TEXT_ALIGN_SRC = chrome.runtime.getURL('scripts/textAlign.js');
+const CLASS_CODE_MIRROR = '.CodeMirror';
+const ROOT_ELEMENT = '#root';
+const ACTIVE_CLASS = 'acitve';
 
 let initTextColorButton = null;
 
@@ -34,17 +37,6 @@ let initTextColorButton = null;
 
   let observer;
 
-  function appendFunctions() {
-    const $toolbar = select()('#toolbar');
-    $toolbar.style.transition = 'none';
-
-    appendToggleButton();
-    appendColorBtn($toolbar);
-    appendThemeBtn($toolbar);
-    appendTemplateBtn($toolbar);
-    appendTextAlignBtn($toolbar);
-  }
-
   chrome.runtime.onMessage.addListener((obj) => {
     const {
       isMatched,
@@ -59,16 +51,16 @@ let initTextColorButton = null;
     if (!isMatched) {
       return;
     }
-    const codeMirror = select()('.CodeMirror');
+    const codeMirror = select()(CLASS_CODE_MIRROR);
 
     if (!codeMirror) {
       observer = new MutationObserver(function () {
-        if (select()('.CodeMirror')) {
+        if (select()(CLASS_CODE_MIRROR)) {
           appendFunctions();
           observer.disconnect();
         }
       });
-      const target = select()('#root');
+      const target = select()(ROOT_ELEMENT);
       const config = { childList: true };
       observer.observe(target, config);
       return;
@@ -93,11 +85,21 @@ let initTextColorButton = null;
     const $templateContentContainer = select()('.template-content-container');
     if (
       $templateContentContainer &&
-      $templateContentContainer.classList.contains('active')
+      $templateContentContainer.classList.contains(ACTIVE_CLASS)
     ) {
-      $templateContentContainer.classList.remove('active');
+      $templateContentContainer.classList.remove(ACTIVE_CLASS);
     }
   });
+  function appendFunctions() {
+    const $toolbar = select()('#toolbar');
+    $toolbar.style.transition = 'none';
+
+    appendToggleButton();
+    appendColorBtn($toolbar);
+    appendThemeBtn($toolbar);
+    appendTemplateBtn($toolbar);
+    appendTextAlignBtn($toolbar);
+  }
 })().then(() => {
   // colorPicker의 경우 custom 버튼이 추가 된 후 로드 필요
   const $hiddenTextArea = document.querySelectorAll('textarea')[2];
