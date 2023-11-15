@@ -9,7 +9,7 @@ const COLOR_BTN_SRC = chrome.runtime.getURL('scripts/colorBtn.js');
 const TEXT_ALIGN_SRC = chrome.runtime.getURL('scripts/textAlign.js');
 const CLASS_CODE_MIRROR = '.CodeMirror';
 const ROOT_ELEMENT = '#root';
-const ACTIVE_CLASS = 'acitve';
+const ACTIVE_CLASS = 'active';
 
 let initTextColorButton = null;
 
@@ -74,13 +74,15 @@ let initTextColorButton = null;
   }
 
   document.addEventListener('click', (e) => {
-    if (
-      e.target.matches('.template-wrapper *') ||
-      e.target.matches('.template-btn *') ||
-      e.target.matches('.template-btn') ||
-      e.target.matches('.template-wrapper')
-    )
+    const selectors = [
+      '.template-wrapper *',
+      '.template-btn *',
+      '.template-btn',
+      '.template-wrapper',
+    ];
+    if (selectors.some((selector) => !!e.target.matches(selector))) {
       return;
+    }
 
     const $templateContentContainer = select()('.template-content-container');
     if (
