@@ -51,9 +51,9 @@ let initTextColorButton = null;
     if (!isMatched) {
       return;
     }
-    const codeMirror = select()(CLASS_CODE_MIRROR);
+    const $codeMirror = select()(CLASS_CODE_MIRROR);
 
-    if (!codeMirror) {
+    if (!$codeMirror) {
       observer = new MutationObserver(function () {
         if (select()(CLASS_CODE_MIRROR)) {
           appendFunctions();
