@@ -15,13 +15,25 @@ function setDisplay(element) {
 let initTextColorButton = null;
 
 (async () => {
-  const { select } = await import(UTIL_SRC);
-  const { appendToggleButton } = await import(PREVIEW_TOGGLE_BTN_SRC);
-  const { pasteTemplate } = await import(TEMPLATE_SRC);
-  const { appendThemeBtn } = await import(THEME_BTN_SRC);
-  const { appendTemplateBtn } = await import(TEMPLATE_BTN_SRC);
-  const { appendColorBtn, initColorButton } = await import(COLOR_BTN_SRC);
-  const { appendTextAlignBtn } = await import(TEXT_ALIGN_SRC);
+  const {
+    select,
+    appendToggleButton,
+    pasteTemplate,
+    appendThemeBtn,
+    appendTemplateBtn,
+    appendColorBtn,
+    initColorButton,
+    appendTextAlignBtn,
+  } = await getImportModule([
+    UTIL_SRC,
+    PREVIEW_TOGGLE_BTN_SRC,
+    TEMPLATE_SRC,
+    THEME_BTN_SRC,
+    TEMPLATE_BTN_SRC,
+    COLOR_BTN_SRC,
+    TEXT_ALIGN_SRC,
+  ]);
+
   initTextColorButton = initColorButton;
 
   let observer;
@@ -96,3 +108,13 @@ let initTextColorButton = null;
   $hiddenTextArea.id = 'hiddenTextArea';
   initTextColorButton();
 });
+
+async function getImportModule(modules) {
+  return Promise.all(modules.map((module) => import(module)))
+    .then((modules) => {
+      return modules.reduce((result, module) => ({ ...result, ...module }), {});
+    })
+    .catch((err) => {
+      console.error('has any errors when import file', err);
+    });
+}
